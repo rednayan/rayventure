@@ -1,6 +1,9 @@
-### for compiling
-##### mkdir build && cd build
-##### cmake $path_to_dir
-##### make
-##### ./main
+#### For compiling
+`mkdir build && cd build`<br>
+
+`cmake $path_to_dir`<br>
+
+`make`<br>
+
+`./main`<br>
 
