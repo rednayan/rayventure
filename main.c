@@ -22,14 +22,13 @@ int main(void) {
 
     BeginDrawing();
     ClearBackground(WHITE);
-    DrawText("frametime: ", 10, 40, 20, BLACK);
-    DrawText(TextFormat("%f ms", frame_time * 1000), 120, 40, 20, BLACK);
     DrawCircle(ball_x, ball_y, ball_radius, BLACK);
     DrawRectangle(rectangle_left_x, rectangle_left_y, rectangle_width,
                   rectangle_height, BLACK);
     DrawRectangle(rectangle_right_x, rectangle_right_y, rectangle_width,
                   rectangle_height, BLACK);
-    DrawFPS(10, 10);
+    DrawText(TextFormat("%f ms", frame_time * 1000), GetScreenWidth() - 140, 40, 20, BLACK);
+    DrawFPS(GetScreenWidth() - 100, 10);
     EndDrawing();
   }
   return 0;
