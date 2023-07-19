@@ -6,11 +6,28 @@ struct Ball {
   float radius;
 };
 
+void draw_ball(struct Ball ball) {
+  DrawCircle(ball.x, ball.y, ball.radius, BLACK);
+}
+
+struct Paddle {
+  float height;
+  float width;
+  float x;
+  float y;
+};
+
+void draw_paddle(struct Paddle paddle) {
+  DrawRectangle(paddle.x, paddle.y, paddle.width, paddle.height, BLACK);
+}
+
 int main() {
   InitWindow(800, 600, "Pong");
   SetWindowState(FLAG_VSYNC_HINT);
 
   struct Ball ball;
+  struct Paddle paddle1;
+  struct Paddle paddle2;
 
   ball.x = GetScreenWidth() / 2.0f;
   ball.y = GetScreenHeight() / 2.0f;
@@ -18,12 +35,15 @@ int main() {
   ball.speed_x = 100;
   ball.speed_y = 300;
 
-  float rectangle_height = 100.0f;
-  float rectangle_width = 10.0f;
-  float rectangle_left_x = 50.0f;
-  float rectangle_left_y = GetScreenHeight() / 2.0f - rectangle_height / 2.0f;
-  float rectangle_right_y = GetScreenHeight() / 2.0f - rectangle_height / 2.0f;
-  float rectangle_right_x = GetScreenWidth() - 50.0f - rectangle_width;
+  paddle1.height = 100.0f;
+  paddle1.width = 10.0f;
+  paddle1.x = 50.0f;
+  paddle1.y = GetScreenHeight() / 2.0f - paddle1.height / 2.0f;
+
+  paddle2.height = 100.0f;
+  paddle2.width = 10.0f;
+  paddle2.x = GetScreenWidth() - 50.0f - paddle2.width;
+  paddle2.y = GetScreenHeight() / 2.0f - paddle1.height / 2.0f;
 
   while (!WindowShouldClose()) {
     float frame_time = GetFrameTime();
@@ -43,11 +63,9 @@ int main() {
 
     BeginDrawing();
     ClearBackground(WHITE);
-    DrawCircle(ball.x, ball.y, ball.radius, BLACK);
-    DrawRectangle(rectangle_left_x, rectangle_left_y, rectangle_width,
-                  rectangle_height, BLACK);
-    DrawRectangle(rectangle_right_x, rectangle_right_y, rectangle_width,
-                  rectangle_height, BLACK);
+    draw_ball(ball);
+    draw_paddle(paddle1);
+    draw_paddle(paddle2);
     DrawText(TextFormat("%f ms", frame_time * 1000), GetScreenWidth() - 140, 40,
              20, BLACK);
     DrawFPS(GetScreenWidth() - 100, 10);
