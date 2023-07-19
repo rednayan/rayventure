@@ -11,10 +11,9 @@ void draw_ball(struct Ball ball) {
 }
 
 struct Paddle {
-  float height;
-  float width;
-  float x;
-  float y;
+  float height, width;
+  float x, y;
+  float speed;
 };
 
 void draw_paddle(struct Paddle paddle) {
@@ -26,8 +25,8 @@ int main() {
   SetWindowState(FLAG_VSYNC_HINT);
 
   struct Ball ball;
-  struct Paddle paddle1;
-  struct Paddle paddle2;
+  struct Paddle left_paddle;
+  struct Paddle right_paddle;
 
   ball.x = GetScreenWidth() / 2.0f;
   ball.y = GetScreenHeight() / 2.0f;
@@ -35,15 +34,17 @@ int main() {
   ball.speed_x = 100;
   ball.speed_y = 300;
 
-  paddle1.height = 100.0f;
-  paddle1.width = 10.0f;
-  paddle1.x = 50.0f;
-  paddle1.y = GetScreenHeight() / 2.0f - paddle1.height / 2.0f;
+  left_paddle.height = 100.0f;
+  left_paddle.width = 10.0f;
+  left_paddle.x = 50.0f;
+  left_paddle.y = GetScreenHeight() / 2.0f - left_paddle.height / 2.0f;
+  left_paddle.speed = 100;
 
-  paddle2.height = 100.0f;
-  paddle2.width = 10.0f;
-  paddle2.x = GetScreenWidth() - 50.0f - paddle2.width;
-  paddle2.y = GetScreenHeight() / 2.0f - paddle1.height / 2.0f;
+  right_paddle.height = 100.0f;
+  right_paddle.width = 10.0f;
+  right_paddle.x = GetScreenWidth() - 50.0f - right_paddle.width;
+  right_paddle.y = GetScreenHeight() / 2.0f - left_paddle.height / 2.0f;
+  right_paddle.speed = 100;
 
   while (!WindowShouldClose()) {
     float frame_time = GetFrameTime();
@@ -61,11 +62,34 @@ int main() {
       ball.speed_y *= -1;
     }
 
+    if (ball.x > GetScreenWidth()) {
+      ball.x = GetScreenWidth();
+      ball.speed_x *= -1;
+    }
+
+    if (ball.x < 0) {
+      ball.x = 0;
+      ball.speed_x *= -1;
+    }
+
+    if (IsKeyDown(KEY_W)) {
+      left_paddle.y -= left_paddle.speed * frame_time;
+    }
+    if (IsKeyDown(KEY_S)) {
+      left_paddle.y += left_paddle.speed * frame_time;
+    }
+    if (IsKeyDown(KEY_K)) {
+      right_paddle.y -= left_paddle.speed * frame_time;
+    }
+    if (IsKeyDown(KEY_J)) {
+      right_paddle.y += left_paddle.speed * frame_time;
+    }
+
     BeginDrawing();
     ClearBackground(WHITE);
     draw_ball(ball);
-    draw_paddle(paddle1);
-    draw_paddle(paddle2);
+    draw_paddle(left_paddle);
+    draw_paddle(right_paddle);
     DrawText(TextFormat("%f ms", frame_time * 1000), GetScreenWidth() - 140, 40,
              20, BLACK);
     DrawFPS(GetScreenWidth() - 100, 10);
