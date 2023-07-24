@@ -36,7 +36,7 @@ int main() {
   ball.x = GetScreenWidth() / 2.0f;
   ball.y = GetScreenHeight() / 2.0f;
   ball.radius = 5.0f;
-  ball.speed_x = 100;
+  ball.speed_x = 300;
   ball.speed_y = 300;
 
   left_paddle.height = 100.0f;
@@ -92,13 +92,21 @@ int main() {
 
     if (CheckCollisionCircleRec((Vector2){ball.x, ball.y}, ball.radius,
                                 get_rect(left_paddle))) {
-      ball.speed_x *= -1;
+      if (ball.speed_x < 0) {
+        ball.speed_x *= -1.1f;
+        ball.speed_y =
+            (ball.y - left_paddle.y) / (left_paddle.height / 2) * -ball.speed_x;
+      }
     }
 
     if (CheckCollisionCircleRec((Vector2){ball.x, ball.y}, ball.radius,
                                 get_rect(right_paddle))) {
 
-      ball.speed_x *= -1;
+      if (ball.speed_x > 0) {
+        ball.speed_x *= -1.1f;
+        ball.speed_y = (ball.y - right_paddle.y) / (right_paddle.height / 2) *
+                       -ball.speed_x;
+      }
     }
 
     BeginDrawing();
