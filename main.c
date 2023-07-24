@@ -1,23 +1,28 @@
 #include "raylib.h"
+#include "stdio.h"
 
-struct Ball {
+typedef struct Ball {
   float x, y;
   float speed_x, speed_y;
   float radius;
-};
+} Ball;
 
 void draw_ball(struct Ball ball) {
   DrawCircle(ball.x, ball.y, ball.radius, BLACK);
 }
 
-struct Paddle {
+typedef struct Paddle {
   float height, width;
   float x, y;
   float speed;
-};
+} Paddle;
+
+Rectangle get_rect(struct Paddle paddle) {
+  return (Rectangle){paddle.x, paddle.y, paddle.width, paddle.height};
+}
 
 void draw_paddle(struct Paddle paddle) {
-  DrawRectangle(paddle.x, paddle.y, paddle.width, paddle.height, BLACK);
+  DrawRectangleRec(get_rect(paddle), BLACK);
 }
 
 int main() {
@@ -38,13 +43,13 @@ int main() {
   left_paddle.width = 10.0f;
   left_paddle.x = 50.0f;
   left_paddle.y = GetScreenHeight() / 2.0f - left_paddle.height / 2.0f;
-  left_paddle.speed = 100;
+  left_paddle.speed = 300;
 
   right_paddle.height = 100.0f;
   right_paddle.width = 10.0f;
   right_paddle.x = GetScreenWidth() - 50.0f - right_paddle.width;
   right_paddle.y = GetScreenHeight() / 2.0f - left_paddle.height / 2.0f;
-  right_paddle.speed = 100;
+  right_paddle.speed = 300;
 
   while (!WindowShouldClose()) {
     float frame_time = GetFrameTime();
@@ -83,6 +88,17 @@ int main() {
     }
     if (IsKeyDown(KEY_J)) {
       right_paddle.y += left_paddle.speed * frame_time;
+    }
+
+    if (CheckCollisionCircleRec((Vector2){ball.x, ball.y}, ball.radius,
+                                get_rect(left_paddle))) {
+      ball.speed_x *= -1;
+    }
+
+    if (CheckCollisionCircleRec((Vector2){ball.x, ball.y}, ball.radius,
+                                get_rect(right_paddle))) {
+
+      ball.speed_x *= -1;
     }
 
     BeginDrawing();
