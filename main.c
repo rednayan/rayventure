@@ -1,5 +1,7 @@
 #include "raylib.h"
 #include "stdio.h"
+#define BALL_SPEED_X 300;
+#define BALL_SPEED_Y 300;
 
 typedef struct Ball {
   float x, y;
@@ -36,8 +38,8 @@ int main() {
   ball.x = GetScreenWidth() / 2.0f;
   ball.y = GetScreenHeight() / 2.0f;
   ball.radius = 5.0f;
-  ball.speed_x = 300;
-  ball.speed_y = 300;
+  ball.speed_x = BALL_SPEED_X;
+  ball.speed_y = BALL_SPEED_Y;
 
   left_paddle.height = 100.0f;
   left_paddle.width = 10.0f;
@@ -50,6 +52,8 @@ int main() {
   right_paddle.x = GetScreenWidth() - 50.0f - right_paddle.width;
   right_paddle.y = GetScreenHeight() / 2.0f - left_paddle.height / 2.0f;
   right_paddle.speed = 300;
+
+  const char *winner_text = NULL;
 
   while (!WindowShouldClose()) {
     float frame_time = GetFrameTime();
@@ -68,13 +72,11 @@ int main() {
     }
 
     if (ball.x > GetScreenWidth()) {
-      ball.x = GetScreenWidth();
-      ball.speed_x *= -1;
+      winner_text = "Left Player Wins!";
     }
 
     if (ball.x < 0) {
-      ball.x = 0;
-      ball.speed_x *= -1;
+      winner_text = "Right Player Wins!";
     }
 
     if (IsKeyDown(KEY_W)) {
@@ -93,7 +95,7 @@ int main() {
     if (CheckCollisionCircleRec((Vector2){ball.x, ball.y}, ball.radius,
                                 get_rect(left_paddle))) {
       if (ball.speed_x < 0) {
-        ball.speed_x *= -1.1f;
+        ball.speed_x *= -1.01f;
         ball.speed_y =
             (ball.y - left_paddle.y) / (left_paddle.height / 2) * -ball.speed_x;
       }
@@ -103,10 +105,18 @@ int main() {
                                 get_rect(right_paddle))) {
 
       if (ball.speed_x > 0) {
-        ball.speed_x *= -1.1f;
+        ball.speed_x *= -1.01f;
         ball.speed_y = (ball.y - right_paddle.y) / (right_paddle.height / 2) *
                        -ball.speed_x;
       }
+    }
+
+    if (winner_text && IsKeyDown(KEY_SPACE)) {
+      ball.x = GetScreenWidth() / 2.0f;
+      ball.y = GetScreenHeight() / 2.0f;
+      ball.speed_x = BALL_SPEED_X;
+      ball.speed_y = BALL_SPEED_Y;
+      winner_text = NULL;
     }
 
     BeginDrawing();
@@ -114,8 +124,13 @@ int main() {
     draw_ball(ball);
     draw_paddle(left_paddle);
     draw_paddle(right_paddle);
-    DrawText(TextFormat("%f ms", frame_time * 1000), GetScreenWidth() - 140, 40,
-             20, BLACK);
+
+    if (winner_text) {
+      int text_width = MeasureText(winner_text, 60);
+      DrawText(winner_text, (GetScreenWidth() / 2) - text_width / 2,
+               GetScreenHeight() / 2 - 30, 60, GREEN);
+    }
+
     DrawFPS(GetScreenWidth() - 100, 10);
     EndDrawing();
   }
