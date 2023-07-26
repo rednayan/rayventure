@@ -3,37 +3,33 @@
 #define BALL_SPEED_X 300;
 #define BALL_SPEED_Y 300;
 
-typedef struct Ball {
+typedef struct {
   float x, y;
   float speed_x, speed_y;
   float radius;
 } Ball;
 
-void draw_ball(struct Ball ball) {
-  DrawCircle(ball.x, ball.y, ball.radius, BLACK);
-}
+void draw_ball(Ball ball) { DrawCircle(ball.x, ball.y, ball.radius, BLACK); }
 
-typedef struct Paddle {
+typedef struct {
   float height, width;
   float x, y;
   float speed;
 } Paddle;
 
-Rectangle get_rect(struct Paddle paddle) {
+Rectangle get_rect(Paddle paddle) {
   return (Rectangle){paddle.x, paddle.y, paddle.width, paddle.height};
 }
 
-void draw_paddle(struct Paddle paddle) {
-  DrawRectangleRec(get_rect(paddle), BLACK);
-}
+void draw_paddle(Paddle paddle) { DrawRectangleRec(get_rect(paddle), BLACK); }
 
 int main() {
   InitWindow(800, 600, "Pong");
   SetWindowState(FLAG_VSYNC_HINT);
 
-  struct Ball ball;
-  struct Paddle left_paddle;
-  struct Paddle right_paddle;
+  Ball ball;
+  Paddle left_paddle;
+  Paddle right_paddle;
 
   ball.x = GetScreenWidth() / 2.0f;
   ball.y = GetScreenHeight() / 2.0f;
